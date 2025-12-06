@@ -1,0 +1,2944 @@
+2025/12/04 15:36:26 - mmengine - INFO - 
+------------------------------------------------------------
+System environment:
+    sys.platform: win32
+    Python: 3.8.20 (default, Oct  3 2024, 15:19:54) [MSC v.1929 64 bit (AMD64)]
+    CUDA available: True
+    MUSA available: False
+    numpy_random_seed: 20404649
+    GPU 0: NVIDIA GeForce RTX 3090
+    CUDA_HOME: C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6
+    NVCC: Cuda compilation tools, release 12.6, V12.6.85
+    MSVC: 用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.44.35217 版
+    GCC: n/a
+    PyTorch: 1.12.0
+    PyTorch compiling details: PyTorch built with:
+  - C++ Version: 199711
+  - MSVC 192829337
+  - Intel(R) Math Kernel Library Version 2020.0.2 Product Build 20200624 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.6.0 (Git Hash 52b5f107dd9cf10910aaa19cb47f3abf9b349815)
+  - OpenMP 2019
+  - LAPACK is enabled (usually provided by MKL)
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.3
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_37,code=compute_37
+  - CuDNN 8.3.2  (built against CUDA 11.5)
+  - Magma 2.5.4
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=11.3, CUDNN_VERSION=8.3.2, CXX_COMPILER=C:/cb/pytorch_1000000000000/work/tmp_bin/sccache-cl.exe, CXX_FLAGS=/DWIN32 /D_WINDOWS /GR /EHsc /w /bigobj -DUSE_PTHREADPOOL -openmp:experimental -IC:/cb/pytorch_1000000000000/work/mkl/include -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOCUPTI -DUSE_FBGEMM -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -DEDGE_PROFILER_USE_KINETO, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.12.0, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=OFF, USE_MPI=OFF, USE_NCCL=OFF, USE_NNPACK=OFF, USE_OPENMP=ON, USE_ROCM=OFF, 
+
+    TorchVision: 0.13.0
+    OpenCV: 4.12.0
+    MMEngine: 0.10.7
+
+Runtime environment:
+    cudnn_benchmark: False
+    mp_cfg: {'mp_start_method': 'fork', 'opencv_num_threads': 0}
+    dist_cfg: {'backend': 'nccl'}
+    seed: 20404649
+    Distributed launcher: none
+    Distributed training: False
+    GPU number: 1
+------------------------------------------------------------
+
+2025/12/04 15:36:27 - mmengine - INFO - Config:
+auto_scale_lr = dict(base_batch_size=16, enable=False)
+checkpoint_config = dict(interval=4)
+custom_hooks = [
+    dict(type='NumClassCheckHook'),
+]
+custom_imports = dict(
+    allow_failed_imports=False,
+    imports=[
+        'srtod_project.srtod_detectors.srtod_cascadercnn_jwpm_bgonly',
+        'srtod_project.srtod_detectors.srtod_datapreprocessor',
+        'srtod_project.srtod_detectors.srtod_twostagedetector',
+    ])
+data_root = '../AI-TOD/'
+dataset_type = 'AITODDataset'
+default_hooks = dict(
+    checkpoint=dict(interval=1, type='CheckpointHook'),
+    logger=dict(interval=50, type='LoggerHook'),
+    param_scheduler=dict(type='ParamSchedulerHook'),
+    sampler_seed=dict(type='DistSamplerSeedHook'),
+    timer=dict(type='IterTimerHook'),
+    visualization=dict(type='DetVisualizationHook'))
+default_scope = 'mmdet'
+env_cfg = dict(
+    cudnn_benchmark=False,
+    dist_cfg=dict(backend='nccl'),
+    mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0))
+evaluation = dict(interval=6, metric='bbox')
+experiment_name = 'srtod_cascadercnn_jwpm_bgonly'
+launcher = 'none'
+load_from = None
+log_level = 'INFO'
+log_processor = dict(by_epoch=True, type='LogProcessor', window_size=50)
+model = dict(
+    backbone=dict(
+        conv_cfg=dict(type='ConvAWS'),
+        depth=50,
+        frozen_stages=1,
+        init_cfg=dict(checkpoint='torchvision://resnet50', type='Pretrained'),
+        norm_cfg=dict(requires_grad=True, type='BN'),
+        norm_eval=True,
+        num_stages=4,
+        out_indices=(
+            0,
+            1,
+            2,
+            3,
+        ),
+        output_img=True,
+        sac=dict(type='SAC', use_deform=True),
+        stage_with_sac=(
+            False,
+            True,
+            True,
+            True,
+        ),
+        style='pytorch',
+        type='DetectoRS_ResNet'),
+    data_preprocessor=dict(
+        bgr_to_rgb=True,
+        mean=[
+            123.675,
+            116.28,
+            103.53,
+        ],
+        pad_size_divisor=32,
+        std=[
+            58.395,
+            57.12,
+            57.375,
+        ],
+        type='SRTOD_DetDataPreprocessor'),
+    jwpm_levels=2,
+    jwpm_theta=0.5,
+    learnable_thresh=0.0117647,
+    loss_res=dict(loss_weight=1.0, reduction='mean', type='MSELoss'),
+    neck=dict(
+        aspp_dilations=(
+            1,
+            3,
+            6,
+            1,
+        ),
+        aspp_out_channels=64,
+        in_channels=[
+            256,
+            512,
+            1024,
+            2048,
+        ],
+        num_outs=5,
+        out_channels=256,
+        rfp_backbone=dict(
+            conv_cfg=dict(type='ConvAWS'),
+            depth=50,
+            frozen_stages=1,
+            init_cfg=dict(
+                checkpoint='torchvision://resnet50', type='Pretrained'),
+            norm_cfg=dict(requires_grad=True, type='BN'),
+            norm_eval=True,
+            num_stages=4,
+            out_indices=(
+                0,
+                1,
+                2,
+                3,
+            ),
+            rfp_inplanes=256,
+            sac=dict(type='SAC', use_deform=True),
+            stage_with_sac=(
+                False,
+                True,
+                True,
+                True,
+            ),
+            style='pytorch',
+            type='DetectoRS_ResNet'),
+        rfp_steps=2,
+        type='RFP'),
+    roi_head=dict(
+        bbox_head=[
+            dict(
+                bbox_coder=dict(
+                    target_means=[
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                    ],
+                    target_stds=[
+                        0.1,
+                        0.1,
+                        0.2,
+                        0.2,
+                    ],
+                    type='DeltaXYWHBBoxCoder'),
+                fc_out_channels=1024,
+                in_channels=256,
+                loss_bbox=dict(beta=1.0, loss_weight=1.0, type='SmoothL1Loss'),
+                loss_cls=dict(
+                    loss_weight=1.0,
+                    type='CrossEntropyLoss',
+                    use_sigmoid=False),
+                num_classes=8,
+                reg_class_agnostic=True,
+                roi_feat_size=7,
+                type='Shared2FCBBoxHead'),
+            dict(
+                bbox_coder=dict(
+                    target_means=[
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                    ],
+                    target_stds=[
+                        0.05,
+                        0.05,
+                        0.1,
+                        0.1,
+                    ],
+                    type='DeltaXYWHBBoxCoder'),
+                fc_out_channels=1024,
+                in_channels=256,
+                loss_bbox=dict(beta=1.0, loss_weight=1.0, type='SmoothL1Loss'),
+                loss_cls=dict(
+                    loss_weight=1.0,
+                    type='CrossEntropyLoss',
+                    use_sigmoid=False),
+                num_classes=8,
+                reg_class_agnostic=True,
+                roi_feat_size=7,
+                type='Shared2FCBBoxHead'),
+            dict(
+                bbox_coder=dict(
+                    target_means=[
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                    ],
+                    target_stds=[
+                        0.033,
+                        0.033,
+                        0.067,
+                        0.067,
+                    ],
+                    type='DeltaXYWHBBoxCoder'),
+                fc_out_channels=1024,
+                in_channels=256,
+                loss_bbox=dict(beta=1.0, loss_weight=1.0, type='SmoothL1Loss'),
+                loss_cls=dict(
+                    loss_weight=1.0,
+                    type='CrossEntropyLoss',
+                    use_sigmoid=False),
+                num_classes=8,
+                reg_class_agnostic=True,
+                roi_feat_size=7,
+                type='Shared2FCBBoxHead'),
+        ],
+        bbox_roi_extractor=dict(
+            featmap_strides=[
+                4,
+                8,
+                16,
+                32,
+            ],
+            out_channels=256,
+            roi_layer=dict(output_size=7, sampling_ratio=0, type='RoIAlign'),
+            type='SingleRoIExtractor'),
+        num_stages=3,
+        stage_loss_weights=[
+            1,
+            0.5,
+            0.25,
+        ],
+        type='CascadeRoIHead'),
+    rpn_head=dict(
+        anchor_generator=dict(
+            ratios=[
+                0.5,
+                1.0,
+                2.0,
+            ],
+            scales=[
+                4,
+            ],
+            strides=[
+                4,
+                8,
+                16,
+                32,
+                64,
+            ],
+            type='AnchorGenerator'),
+        bbox_coder=dict(
+            target_means=[
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+            ],
+            target_stds=[
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+            ],
+            type='DeltaXYWHBBoxCoder'),
+        feat_channels=256,
+        in_channels=256,
+        loss_bbox=dict(
+            beta=0.1111111111111111, loss_weight=1.0, type='SmoothL1Loss'),
+        loss_cls=dict(
+            loss_weight=1.0, type='CrossEntropyLoss', use_sigmoid=True),
+        type='RPNHead'),
+    test_cfg=dict(
+        rcnn=dict(
+            max_per_img=3000,
+            nms=dict(iou_threshold=0.5, type='nms'),
+            score_thr=0.05),
+        rpn=dict(
+            max_per_img=3000,
+            min_bbox_size=0,
+            nms=dict(iou_threshold=0.7, type='nms'),
+            nms_pre=3000)),
+    train_cfg=dict(
+        rcnn=[
+            dict(
+                assigner=dict(
+                    gpu_assign_thr=256,
+                    ignore_iof_thr=-1,
+                    match_low_quality=False,
+                    min_pos_iou=0.5,
+                    neg_iou_thr=0.5,
+                    pos_iou_thr=0.5,
+                    type='MaxIoUAssigner'),
+                debug=False,
+                pos_weight=-1,
+                sampler=dict(
+                    add_gt_as_proposals=True,
+                    neg_pos_ub=-1,
+                    num=512,
+                    pos_fraction=0.25,
+                    type='RandomSampler')),
+            dict(
+                assigner=dict(
+                    gpu_assign_thr=256,
+                    ignore_iof_thr=-1,
+                    match_low_quality=False,
+                    min_pos_iou=0.6,
+                    neg_iou_thr=0.6,
+                    pos_iou_thr=0.6,
+                    type='MaxIoUAssigner'),
+                debug=False,
+                pos_weight=-1,
+                sampler=dict(
+                    add_gt_as_proposals=True,
+                    neg_pos_ub=-1,
+                    num=512,
+                    pos_fraction=0.25,
+                    type='RandomSampler')),
+            dict(
+                assigner=dict(
+                    gpu_assign_thr=256,
+                    ignore_iof_thr=-1,
+                    match_low_quality=False,
+                    min_pos_iou=0.7,
+                    neg_iou_thr=0.7,
+                    pos_iou_thr=0.7,
+                    type='MaxIoUAssigner'),
+                debug=False,
+                pos_weight=-1,
+                sampler=dict(
+                    add_gt_as_proposals=True,
+                    neg_pos_ub=-1,
+                    num=512,
+                    pos_fraction=0.25,
+                    type='RandomSampler')),
+        ],
+        rpn=dict(
+            allowed_border=0,
+            assigner=dict(
+                ignore_iof_thr=-1,
+                match_low_quality=True,
+                min_pos_iou=0.3,
+                neg_iou_thr=0.3,
+                pos_iou_thr=0.7,
+                type='MaxIoUAssigner'),
+            debug=False,
+            pos_weight=-1,
+            sampler=dict(
+                add_gt_as_proposals=False,
+                neg_pos_ub=-1,
+                num=256,
+                pos_fraction=0.5,
+                type='RandomSampler')),
+        rpn_proposal=dict(
+            max_per_img=3000,
+            min_bbox_size=0,
+            nms=dict(iou_threshold=0.7, type='nms'),
+            nms_pre=3000)),
+    type='SRTOD_CascadeRCNN_JWPM_BGOnly')
+optim_wrapper = dict(
+    clip_grad=None,
+    optimizer=dict(lr=0.005, momentum=0.9, type='SGD', weight_decay=0.0001),
+    type='OptimWrapper')
+optimizer = dict(lr=0.005, momentum=0.9, type='SGD', weight_decay=0.0001)
+param_scheduler = [
+    dict(
+        begin=0, by_epoch=False, end=5000, start_factor=0.001,
+        type='LinearLR'),
+    dict(
+        begin=0,
+        by_epoch=True,
+        end=36,
+        gamma=0.1,
+        milestones=[
+            24,
+            33,
+        ],
+        type='MultiStepLR'),
+]
+resume_from = None
+runner = dict(max_epochs=36, type='EpochBasedRunner')
+test_cfg = dict(type='TestLoop')
+test_dataloader = dict(
+    batch_size=1,
+    dataset=dict(
+        ann_file='annotations/aitod_test_v1.json',
+        backend_args=None,
+        data_prefix=dict(img='test/images/'),
+        data_root='../AI-TOD/',
+        pipeline=[
+            dict(backend_args=None, type='LoadImageFromFile'),
+            dict(keep_ratio=True, scale=(
+                800,
+                800,
+            ), type='Resize'),
+            dict(type='LoadAnnotations', with_bbox=True),
+            dict(
+                meta_keys=(
+                    'img_id',
+                    'img_path',
+                    'ori_shape',
+                    'img_shape',
+                    'scale_factor',
+                ),
+                type='PackDetInputs'),
+        ],
+        test_mode=True,
+        type='AITODDataset'),
+    drop_last=False,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(shuffle=False, type='DefaultSampler'))
+test_evaluator = dict(
+    ann_file='../AI-TOD/annotations/aitod_test_v1.json',
+    backend_args=None,
+    format_only=False,
+    metric='bbox',
+    type='CocoMetric')
+test_pipeline = [
+    dict(backend_args=None, type='LoadImageFromFile'),
+    dict(keep_ratio=True, scale=(
+        800,
+        800,
+    ), type='Resize'),
+    dict(type='LoadAnnotations', with_bbox=True),
+    dict(
+        meta_keys=(
+            'img_id',
+            'img_path',
+            'ori_shape',
+            'img_shape',
+            'scale_factor',
+        ),
+        type='PackDetInputs'),
+]
+train_cfg = dict(max_epochs=36, type='EpochBasedTrainLoop', val_interval=6)
+train_dataloader = dict(
+    batch_sampler=dict(type='AspectRatioBatchSampler'),
+    batch_size=2,
+    dataset=dict(
+        ann_file='annotations/aitod_trainval_v1.json',
+        backend_args=None,
+        data_prefix=dict(img='trainval/images/'),
+        data_root='../AI-TOD/',
+        filter_cfg=dict(filter_empty_gt=True, min_size=32),
+        pipeline=[
+            dict(backend_args=None, type='LoadImageFromFile'),
+            dict(type='LoadAnnotations', with_bbox=True),
+            dict(keep_ratio=True, scale=(
+                800,
+                800,
+            ), type='Resize'),
+            dict(prob=0.5, type='RandomFlip'),
+            dict(type='PackDetInputs'),
+        ],
+        type='AITODDataset'),
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(shuffle=True, type='DefaultSampler'))
+train_pipeline = [
+    dict(backend_args=None, type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', with_bbox=True),
+    dict(keep_ratio=True, scale=(
+        800,
+        800,
+    ), type='Resize'),
+    dict(prob=0.5, type='RandomFlip'),
+    dict(type='PackDetInputs'),
+]
+val_cfg = dict(type='ValLoop')
+val_dataloader = dict(
+    batch_size=1,
+    dataset=dict(
+        ann_file='annotations/aitod_test_v1.json',
+        backend_args=None,
+        data_prefix=dict(img='test/images/'),
+        data_root='../AI-TOD/',
+        pipeline=[
+            dict(backend_args=None, type='LoadImageFromFile'),
+            dict(keep_ratio=True, scale=(
+                800,
+                800,
+            ), type='Resize'),
+            dict(type='LoadAnnotations', with_bbox=True),
+            dict(
+                meta_keys=(
+                    'img_id',
+                    'img_path',
+                    'ori_shape',
+                    'img_shape',
+                    'scale_factor',
+                ),
+                type='PackDetInputs'),
+        ],
+        test_mode=True,
+        type='AITODDataset'),
+    drop_last=False,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(shuffle=False, type='DefaultSampler'))
+val_evaluator = dict(
+    ann_file='../AI-TOD/annotations/aitod_test_v1.json',
+    backend_args=None,
+    format_only=False,
+    metric='bbox',
+    type='CocoMetric')
+vis_backends = [
+    dict(type='LocalVisBackend'),
+]
+visualizer = dict(
+    name='visualizer',
+    type='DetLocalVisualizer',
+    vis_backends=[
+        dict(type='LocalVisBackend'),
+    ])
+work_dir = './work_dirs/srtod_cascadercnn_jwpm_bgonly'
+workflow = [
+    (
+        'train',
+        1,
+    ),
+]
+
+2025/12/04 15:36:28 - mmengine - INFO - Distributed training is not used, all SyncBatchNorm (SyncBN) layers in the model will be automatically reverted to BatchNormXd layers if they are used.
+2025/12/04 15:36:28 - mmengine - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+before_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DistSamplerSeedHook                
+(NORMAL      ) NumClassCheckHook                  
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) IterTimerHook                      
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) NumClassCheckHook                  
+ -------------------- 
+before_val_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DetVisualizationHook               
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_val_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_test_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_test_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_test_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DetVisualizationHook               
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_run:
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+2025/12/04 15:36:43 - mmengine - INFO - Loads checkpoint by torchvision backend from path: torchvision://resnet50
+2025/12/04 15:36:43 - mmengine - WARNING - The model and loaded state dict do not match exactly
+
+unexpected key in source state_dict: fc.weight, fc.bias
+
+missing keys in source state_dict: layer2.0.conv2.weight_diff, layer2.0.conv2.switch.weight, layer2.0.conv2.switch.bias, layer2.0.conv2.pre_context.weight, layer2.0.conv2.pre_context.bias, layer2.0.conv2.post_context.weight, layer2.0.conv2.post_context.bias, layer2.0.conv2.offset_s.weight, layer2.0.conv2.offset_s.bias, layer2.0.conv2.offset_l.weight, layer2.0.conv2.offset_l.bias, layer2.1.conv2.weight_diff, layer2.1.conv2.switch.weight, layer2.1.conv2.switch.bias, layer2.1.conv2.pre_context.weight, layer2.1.conv2.pre_context.bias, layer2.1.conv2.post_context.weight, layer2.1.conv2.post_context.bias, layer2.1.conv2.offset_s.weight, layer2.1.conv2.offset_s.bias, layer2.1.conv2.offset_l.weight, layer2.1.conv2.offset_l.bias, layer2.2.conv2.weight_diff, layer2.2.conv2.switch.weight, layer2.2.conv2.switch.bias, layer2.2.conv2.pre_context.weight, layer2.2.conv2.pre_context.bias, layer2.2.conv2.post_context.weight, layer2.2.conv2.post_context.bias, layer2.2.conv2.offset_s.weight, layer2.2.conv2.offset_s.bias, layer2.2.conv2.offset_l.weight, layer2.2.conv2.offset_l.bias, layer2.3.conv2.weight_diff, layer2.3.conv2.switch.weight, layer2.3.conv2.switch.bias, layer2.3.conv2.pre_context.weight, layer2.3.conv2.pre_context.bias, layer2.3.conv2.post_context.weight, layer2.3.conv2.post_context.bias, layer2.3.conv2.offset_s.weight, layer2.3.conv2.offset_s.bias, layer2.3.conv2.offset_l.weight, layer2.3.conv2.offset_l.bias, layer3.0.conv2.weight_diff, layer3.0.conv2.switch.weight, layer3.0.conv2.switch.bias, layer3.0.conv2.pre_context.weight, layer3.0.conv2.pre_context.bias, layer3.0.conv2.post_context.weight, layer3.0.conv2.post_context.bias, layer3.0.conv2.offset_s.weight, layer3.0.conv2.offset_s.bias, layer3.0.conv2.offset_l.weight, layer3.0.conv2.offset_l.bias, layer3.1.conv2.weight_diff, layer3.1.conv2.switch.weight, layer3.1.conv2.switch.bias, layer3.1.conv2.pre_context.weight, layer3.1.conv2.pre_context.bias, layer3.1.conv2.post_context.weight, layer3.1.conv2.post_context.bias, layer3.1.conv2.offset_s.weight, layer3.1.conv2.offset_s.bias, layer3.1.conv2.offset_l.weight, layer3.1.conv2.offset_l.bias, layer3.2.conv2.weight_diff, layer3.2.conv2.switch.weight, layer3.2.conv2.switch.bias, layer3.2.conv2.pre_context.weight, layer3.2.conv2.pre_context.bias, layer3.2.conv2.post_context.weight, layer3.2.conv2.post_context.bias, layer3.2.conv2.offset_s.weight, layer3.2.conv2.offset_s.bias, layer3.2.conv2.offset_l.weight, layer3.2.conv2.offset_l.bias, layer3.3.conv2.weight_diff, layer3.3.conv2.switch.weight, layer3.3.conv2.switch.bias, layer3.3.conv2.pre_context.weight, layer3.3.conv2.pre_context.bias, layer3.3.conv2.post_context.weight, layer3.3.conv2.post_context.bias, layer3.3.conv2.offset_s.weight, layer3.3.conv2.offset_s.bias, layer3.3.conv2.offset_l.weight, layer3.3.conv2.offset_l.bias, layer3.4.conv2.weight_diff, layer3.4.conv2.switch.weight, layer3.4.conv2.switch.bias, layer3.4.conv2.pre_context.weight, layer3.4.conv2.pre_context.bias, layer3.4.conv2.post_context.weight, layer3.4.conv2.post_context.bias, layer3.4.conv2.offset_s.weight, layer3.4.conv2.offset_s.bias, layer3.4.conv2.offset_l.weight, layer3.4.conv2.offset_l.bias, layer3.5.conv2.weight_diff, layer3.5.conv2.switch.weight, layer3.5.conv2.switch.bias, layer3.5.conv2.pre_context.weight, layer3.5.conv2.pre_context.bias, layer3.5.conv2.post_context.weight, layer3.5.conv2.post_context.bias, layer3.5.conv2.offset_s.weight, layer3.5.conv2.offset_s.bias, layer3.5.conv2.offset_l.weight, layer3.5.conv2.offset_l.bias, layer4.0.conv2.weight_diff, layer4.0.conv2.switch.weight, layer4.0.conv2.switch.bias, layer4.0.conv2.pre_context.weight, layer4.0.conv2.pre_context.bias, layer4.0.conv2.post_context.weight, layer4.0.conv2.post_context.bias, layer4.0.conv2.offset_s.weight, layer4.0.conv2.offset_s.bias, layer4.0.conv2.offset_l.weight, layer4.0.conv2.offset_l.bias, layer4.1.conv2.weight_diff, layer4.1.conv2.switch.weight, layer4.1.conv2.switch.bias, layer4.1.conv2.pre_context.weight, layer4.1.conv2.pre_context.bias, layer4.1.conv2.post_context.weight, layer4.1.conv2.post_context.bias, layer4.1.conv2.offset_s.weight, layer4.1.conv2.offset_s.bias, layer4.1.conv2.offset_l.weight, layer4.1.conv2.offset_l.bias, layer4.2.conv2.weight_diff, layer4.2.conv2.switch.weight, layer4.2.conv2.switch.bias, layer4.2.conv2.pre_context.weight, layer4.2.conv2.pre_context.bias, layer4.2.conv2.post_context.weight, layer4.2.conv2.post_context.bias, layer4.2.conv2.offset_s.weight, layer4.2.conv2.offset_s.bias, layer4.2.conv2.offset_l.weight, layer4.2.conv2.offset_l.bias
+
+2025/12/04 15:36:43 - mmengine - INFO - Loads checkpoint by torchvision backend from path: torchvision://resnet50
+2025/12/04 15:36:43 - mmengine - WARNING - The model and loaded state dict do not match exactly
+
+unexpected key in source state_dict: fc.weight, fc.bias
+
+missing keys in source state_dict: layer2.0.conv2.weight_diff, layer2.0.conv2.switch.weight, layer2.0.conv2.switch.bias, layer2.0.conv2.pre_context.weight, layer2.0.conv2.pre_context.bias, layer2.0.conv2.post_context.weight, layer2.0.conv2.post_context.bias, layer2.0.conv2.offset_s.weight, layer2.0.conv2.offset_s.bias, layer2.0.conv2.offset_l.weight, layer2.0.conv2.offset_l.bias, layer2.0.rfp_conv.weight, layer2.0.rfp_conv.bias, layer2.1.conv2.weight_diff, layer2.1.conv2.switch.weight, layer2.1.conv2.switch.bias, layer2.1.conv2.pre_context.weight, layer2.1.conv2.pre_context.bias, layer2.1.conv2.post_context.weight, layer2.1.conv2.post_context.bias, layer2.1.conv2.offset_s.weight, layer2.1.conv2.offset_s.bias, layer2.1.conv2.offset_l.weight, layer2.1.conv2.offset_l.bias, layer2.2.conv2.weight_diff, layer2.2.conv2.switch.weight, layer2.2.conv2.switch.bias, layer2.2.conv2.pre_context.weight, layer2.2.conv2.pre_context.bias, layer2.2.conv2.post_context.weight, layer2.2.conv2.post_context.bias, layer2.2.conv2.offset_s.weight, layer2.2.conv2.offset_s.bias, layer2.2.conv2.offset_l.weight, layer2.2.conv2.offset_l.bias, layer2.3.conv2.weight_diff, layer2.3.conv2.switch.weight, layer2.3.conv2.switch.bias, layer2.3.conv2.pre_context.weight, layer2.3.conv2.pre_context.bias, layer2.3.conv2.post_context.weight, layer2.3.conv2.post_context.bias, layer2.3.conv2.offset_s.weight, layer2.3.conv2.offset_s.bias, layer2.3.conv2.offset_l.weight, layer2.3.conv2.offset_l.bias, layer3.0.conv2.weight_diff, layer3.0.conv2.switch.weight, layer3.0.conv2.switch.bias, layer3.0.conv2.pre_context.weight, layer3.0.conv2.pre_context.bias, layer3.0.conv2.post_context.weight, layer3.0.conv2.post_context.bias, layer3.0.conv2.offset_s.weight, layer3.0.conv2.offset_s.bias, layer3.0.conv2.offset_l.weight, layer3.0.conv2.offset_l.bias, layer3.0.rfp_conv.weight, layer3.0.rfp_conv.bias, layer3.1.conv2.weight_diff, layer3.1.conv2.switch.weight, layer3.1.conv2.switch.bias, layer3.1.conv2.pre_context.weight, layer3.1.conv2.pre_context.bias, layer3.1.conv2.post_context.weight, layer3.1.conv2.post_context.bias, layer3.1.conv2.offset_s.weight, layer3.1.conv2.offset_s.bias, layer3.1.conv2.offset_l.weight, layer3.1.conv2.offset_l.bias, layer3.2.conv2.weight_diff, layer3.2.conv2.switch.weight, layer3.2.conv2.switch.bias, layer3.2.conv2.pre_context.weight, layer3.2.conv2.pre_context.bias, layer3.2.conv2.post_context.weight, layer3.2.conv2.post_context.bias, layer3.2.conv2.offset_s.weight, layer3.2.conv2.offset_s.bias, layer3.2.conv2.offset_l.weight, layer3.2.conv2.offset_l.bias, layer3.3.conv2.weight_diff, layer3.3.conv2.switch.weight, layer3.3.conv2.switch.bias, layer3.3.conv2.pre_context.weight, layer3.3.conv2.pre_context.bias, layer3.3.conv2.post_context.weight, layer3.3.conv2.post_context.bias, layer3.3.conv2.offset_s.weight, layer3.3.conv2.offset_s.bias, layer3.3.conv2.offset_l.weight, layer3.3.conv2.offset_l.bias, layer3.4.conv2.weight_diff, layer3.4.conv2.switch.weight, layer3.4.conv2.switch.bias, layer3.4.conv2.pre_context.weight, layer3.4.conv2.pre_context.bias, layer3.4.conv2.post_context.weight, layer3.4.conv2.post_context.bias, layer3.4.conv2.offset_s.weight, layer3.4.conv2.offset_s.bias, layer3.4.conv2.offset_l.weight, layer3.4.conv2.offset_l.bias, layer3.5.conv2.weight_diff, layer3.5.conv2.switch.weight, layer3.5.conv2.switch.bias, layer3.5.conv2.pre_context.weight, layer3.5.conv2.pre_context.bias, layer3.5.conv2.post_context.weight, layer3.5.conv2.post_context.bias, layer3.5.conv2.offset_s.weight, layer3.5.conv2.offset_s.bias, layer3.5.conv2.offset_l.weight, layer3.5.conv2.offset_l.bias, layer4.0.conv2.weight_diff, layer4.0.conv2.switch.weight, layer4.0.conv2.switch.bias, layer4.0.conv2.pre_context.weight, layer4.0.conv2.pre_context.bias, layer4.0.conv2.post_context.weight, layer4.0.conv2.post_context.bias, layer4.0.conv2.offset_s.weight, layer4.0.conv2.offset_s.bias, layer4.0.conv2.offset_l.weight, layer4.0.conv2.offset_l.bias, layer4.0.rfp_conv.weight, layer4.0.rfp_conv.bias, layer4.1.conv2.weight_diff, layer4.1.conv2.switch.weight, layer4.1.conv2.switch.bias, layer4.1.conv2.pre_context.weight, layer4.1.conv2.pre_context.bias, layer4.1.conv2.post_context.weight, layer4.1.conv2.post_context.bias, layer4.1.conv2.offset_s.weight, layer4.1.conv2.offset_s.bias, layer4.1.conv2.offset_l.weight, layer4.1.conv2.offset_l.bias, layer4.2.conv2.weight_diff, layer4.2.conv2.switch.weight, layer4.2.conv2.switch.bias, layer4.2.conv2.pre_context.weight, layer4.2.conv2.pre_context.bias, layer4.2.conv2.post_context.weight, layer4.2.conv2.post_context.bias, layer4.2.conv2.offset_s.weight, layer4.2.conv2.offset_s.bias, layer4.2.conv2.offset_l.weight, layer4.2.conv2.offset_l.bias
+
+Name of parameter - Initialization information
+
+learnable_thresh - torch.Size([]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.conv1.weight - torch.Size([64, 3, 7, 7]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.bn1.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.bn1.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.conv1.weight - torch.Size([64, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.bn1.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.bn1.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.conv2.weight - torch.Size([64, 64, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.bn2.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.bn2.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.conv3.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.bn3.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.bn3.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.downsample.0.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.downsample.1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.0.downsample.1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.1.conv1.weight - torch.Size([64, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.1.bn1.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.1.bn1.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.1.conv2.weight - torch.Size([64, 64, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.1.bn2.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.1.bn2.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.1.conv3.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.1.bn3.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.1.bn3.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.2.conv1.weight - torch.Size([64, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.2.bn1.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.2.bn1.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.2.conv2.weight - torch.Size([64, 64, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.2.bn2.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.2.bn2.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.2.conv3.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.2.bn3.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer1.2.bn3.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.conv1.weight - torch.Size([128, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.conv2.weight_diff - torch.Size([128, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.0.conv2.switch.weight - torch.Size([1, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.0.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.0.conv2.pre_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.0.conv2.pre_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.0.conv2.post_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.0.conv2.post_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.0.conv2.offset_s.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.0.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.0.conv2.offset_l.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.0.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.0.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.downsample.0.weight - torch.Size([512, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.downsample.1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.0.downsample.1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.1.conv1.weight - torch.Size([128, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.1.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.1.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.1.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.1.conv2.weight_diff - torch.Size([128, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.1.conv2.switch.weight - torch.Size([1, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.1.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.1.conv2.pre_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.1.conv2.pre_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.1.conv2.post_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.1.conv2.post_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.1.conv2.offset_s.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.1.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.1.conv2.offset_l.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.1.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.1.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.1.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.1.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.1.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.1.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.2.conv1.weight - torch.Size([128, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.2.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.2.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.2.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.2.conv2.weight_diff - torch.Size([128, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.2.conv2.switch.weight - torch.Size([1, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.2.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.2.conv2.pre_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.2.conv2.pre_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.2.conv2.post_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.2.conv2.post_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.2.conv2.offset_s.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.2.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.2.conv2.offset_l.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.2.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.2.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.2.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.2.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.2.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.2.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.3.conv1.weight - torch.Size([128, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.3.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.3.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.3.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.3.conv2.weight_diff - torch.Size([128, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.3.conv2.switch.weight - torch.Size([1, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.3.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.3.conv2.pre_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.3.conv2.pre_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.3.conv2.post_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.3.conv2.post_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.3.conv2.offset_s.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.3.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.3.conv2.offset_l.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.3.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer2.3.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.3.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.3.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.3.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer2.3.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.conv1.weight - torch.Size([256, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.0.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.0.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.0.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.0.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.0.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.0.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.0.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.0.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.0.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.0.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.0.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.downsample.0.weight - torch.Size([1024, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.downsample.1.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.0.downsample.1.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.1.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.1.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.1.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.1.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.1.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.1.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.1.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.1.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.1.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.1.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.1.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.1.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.1.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.1.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.1.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.1.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.1.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.1.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.1.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.1.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.2.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.2.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.2.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.2.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.2.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.2.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.2.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.2.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.2.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.2.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.2.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.2.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.2.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.2.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.2.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.2.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.2.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.2.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.2.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.2.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.3.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.3.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.3.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.3.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.3.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.3.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.3.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.3.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.3.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.3.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.3.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.3.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.3.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.3.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.3.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.3.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.3.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.3.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.3.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.3.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.4.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.4.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.4.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.4.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.4.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.4.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.4.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.4.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.4.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.4.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.4.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.4.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.4.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.4.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.4.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.4.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.4.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.4.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.4.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.4.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.5.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.5.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.5.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.5.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.5.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.5.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.5.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.5.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.5.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.5.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.5.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.5.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.5.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.5.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.5.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer3.5.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.5.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.5.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.5.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer3.5.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.conv1.weight - torch.Size([512, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.bn1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.bn1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.conv2.weight - torch.Size([512, 512, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.conv2.weight_diff - torch.Size([512, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.0.conv2.switch.weight - torch.Size([1, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.0.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.0.conv2.pre_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.0.conv2.pre_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.0.conv2.post_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.0.conv2.post_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.0.conv2.offset_s.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.0.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.0.conv2.offset_l.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.0.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.0.bn2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.bn2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.bn3.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.bn3.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.downsample.0.weight - torch.Size([2048, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.downsample.1.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.0.downsample.1.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.1.conv1.weight - torch.Size([512, 2048, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.1.bn1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.1.bn1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.1.conv2.weight - torch.Size([512, 512, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.1.conv2.weight_diff - torch.Size([512, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.1.conv2.switch.weight - torch.Size([1, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.1.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.1.conv2.pre_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.1.conv2.pre_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.1.conv2.post_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.1.conv2.post_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.1.conv2.offset_s.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.1.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.1.conv2.offset_l.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.1.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.1.bn2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.1.bn2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.1.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.1.bn3.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.1.bn3.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.2.conv1.weight - torch.Size([512, 2048, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.2.bn1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.2.bn1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.2.conv2.weight - torch.Size([512, 512, 3, 3]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.2.conv2.weight_diff - torch.Size([512, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.2.conv2.switch.weight - torch.Size([1, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.2.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.2.conv2.pre_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.2.conv2.pre_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.2.conv2.post_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.2.conv2.post_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.2.conv2.offset_s.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.2.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.2.conv2.offset_l.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.2.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+backbone.layer4.2.bn2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.2.bn2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.2.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.2.bn3.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+backbone.layer4.2.bn3.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in DetectoRS_ResNet  
+
+neck.lateral_convs.0.conv.weight - torch.Size([256, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.lateral_convs.0.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.lateral_convs.1.conv.weight - torch.Size([256, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.lateral_convs.1.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.lateral_convs.2.conv.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.lateral_convs.2.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.lateral_convs.3.conv.weight - torch.Size([256, 2048, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.lateral_convs.3.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.fpn_convs.0.conv.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.fpn_convs.0.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.fpn_convs.1.conv.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.fpn_convs.1.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.fpn_convs.2.conv.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.fpn_convs.2.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.fpn_convs.3.conv.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.fpn_convs.3.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.conv1.weight - torch.Size([64, 3, 7, 7]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.bn1.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.bn1.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.conv1.weight - torch.Size([64, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.bn1.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.bn1.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.conv2.weight - torch.Size([64, 64, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.bn2.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.bn2.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.conv3.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.bn3.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.bn3.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.downsample.0.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.downsample.1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.0.downsample.1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.1.conv1.weight - torch.Size([64, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.1.bn1.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.1.bn1.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.1.conv2.weight - torch.Size([64, 64, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.1.bn2.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.1.bn2.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.1.conv3.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.1.bn3.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.1.bn3.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.2.conv1.weight - torch.Size([64, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.2.bn1.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.2.bn1.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.2.conv2.weight - torch.Size([64, 64, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.2.bn2.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.2.bn2.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.2.conv3.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.2.bn3.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer1.2.bn3.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.conv1.weight - torch.Size([128, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.conv2.weight_diff - torch.Size([128, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.conv2.switch.weight - torch.Size([1, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.conv2.pre_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.conv2.pre_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.conv2.post_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.conv2.post_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.conv2.offset_s.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.conv2.offset_l.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.downsample.0.weight - torch.Size([512, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.downsample.1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.downsample.1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.0.rfp_conv.weight - torch.Size([512, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.0.rfp_conv.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.conv1.weight - torch.Size([128, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.1.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.1.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.1.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.1.conv2.weight_diff - torch.Size([128, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.conv2.switch.weight - torch.Size([1, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.conv2.pre_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.conv2.pre_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.conv2.post_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.conv2.post_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.conv2.offset_s.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.conv2.offset_l.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.1.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.1.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.1.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.1.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.1.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.2.conv1.weight - torch.Size([128, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.2.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.2.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.2.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.2.conv2.weight_diff - torch.Size([128, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.2.conv2.switch.weight - torch.Size([1, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.2.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.2.conv2.pre_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.2.conv2.pre_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.2.conv2.post_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.2.conv2.post_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.2.conv2.offset_s.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.2.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.2.conv2.offset_l.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.2.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.2.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.2.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.2.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.2.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.2.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.3.conv1.weight - torch.Size([128, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.3.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.3.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.3.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.3.conv2.weight_diff - torch.Size([128, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.3.conv2.switch.weight - torch.Size([1, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.3.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.3.conv2.pre_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.3.conv2.pre_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.3.conv2.post_context.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.3.conv2.post_context.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.3.conv2.offset_s.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.3.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.3.conv2.offset_l.weight - torch.Size([18, 128, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.3.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer2.3.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.3.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.3.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.3.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer2.3.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.conv1.weight - torch.Size([256, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.downsample.0.weight - torch.Size([1024, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.downsample.1.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.downsample.1.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.0.rfp_conv.weight - torch.Size([1024, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.0.rfp_conv.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.1.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.1.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.1.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.1.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.1.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.1.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.1.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.1.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.1.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.2.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.2.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.2.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.2.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.2.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.2.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.2.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.2.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.2.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.2.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.2.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.2.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.2.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.2.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.2.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.2.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.2.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.2.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.2.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.2.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.3.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.3.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.3.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.3.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.3.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.3.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.3.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.3.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.3.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.3.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.3.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.3.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.3.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.3.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.3.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.3.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.3.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.3.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.3.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.3.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.4.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.4.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.4.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.4.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.4.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.4.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.4.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.4.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.4.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.4.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.4.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.4.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.4.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.4.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.4.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.4.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.4.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.4.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.4.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.4.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.5.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.5.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.5.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.5.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.5.conv2.weight_diff - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.5.conv2.switch.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.5.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.5.conv2.pre_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.5.conv2.pre_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.5.conv2.post_context.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.5.conv2.post_context.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.5.conv2.offset_s.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.5.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.5.conv2.offset_l.weight - torch.Size([18, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.5.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer3.5.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.5.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.5.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.5.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer3.5.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.conv1.weight - torch.Size([512, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.bn1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.bn1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.conv2.weight - torch.Size([512, 512, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.conv2.weight_diff - torch.Size([512, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.conv2.switch.weight - torch.Size([1, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.conv2.pre_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.conv2.pre_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.conv2.post_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.conv2.post_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.conv2.offset_s.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.conv2.offset_l.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.bn2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.bn2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.bn3.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.bn3.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.downsample.0.weight - torch.Size([2048, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.downsample.1.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.downsample.1.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.0.rfp_conv.weight - torch.Size([2048, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.0.rfp_conv.bias - torch.Size([2048]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.conv1.weight - torch.Size([512, 2048, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.1.bn1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.1.bn1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.1.conv2.weight - torch.Size([512, 512, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.1.conv2.weight_diff - torch.Size([512, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.conv2.switch.weight - torch.Size([1, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.conv2.pre_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.conv2.pre_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.conv2.post_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.conv2.post_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.conv2.offset_s.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.conv2.offset_l.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.1.bn2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.1.bn2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.1.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.1.bn3.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.1.bn3.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.2.conv1.weight - torch.Size([512, 2048, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.2.bn1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.2.bn1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.2.conv2.weight - torch.Size([512, 512, 3, 3]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.2.conv2.weight_diff - torch.Size([512, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.2.conv2.switch.weight - torch.Size([1, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.2.conv2.switch.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.2.conv2.pre_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.2.conv2.pre_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.2.conv2.post_context.weight - torch.Size([512, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.2.conv2.post_context.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.2.conv2.offset_s.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.2.conv2.offset_s.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.2.conv2.offset_l.weight - torch.Size([18, 512, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.2.conv2.offset_l.bias - torch.Size([18]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_modules.0.layer4.2.bn2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.2.bn2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.2.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.2.bn3.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_modules.0.layer4.2.bn3.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_aspp.aspp.0.weight - torch.Size([64, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_aspp.aspp.0.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_aspp.aspp.1.weight - torch.Size([64, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_aspp.aspp.1.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_aspp.aspp.2.weight - torch.Size([64, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_aspp.aspp.2.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_aspp.aspp.3.weight - torch.Size([64, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_aspp.aspp.3.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+neck.rfp_weight.weight - torch.Size([1, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+neck.rfp_weight.bias - torch.Size([1]): 
+Initialized by user-defined `init_weights` in RFP  
+
+rpn_head.rpn_conv.weight - torch.Size([256, 256, 3, 3]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+rpn_head.rpn_conv.bias - torch.Size([256]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+rpn_head.rpn_cls.weight - torch.Size([3, 256, 1, 1]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+rpn_head.rpn_cls.bias - torch.Size([3]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+rpn_head.rpn_reg.weight - torch.Size([12, 256, 1, 1]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+rpn_head.rpn_reg.bias - torch.Size([12]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+roi_head.bbox_head.0.fc_cls.weight - torch.Size([9, 1024]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+roi_head.bbox_head.0.fc_cls.bias - torch.Size([9]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+roi_head.bbox_head.0.fc_reg.weight - torch.Size([4, 1024]): 
+NormalInit: mean=0, std=0.001, bias=0 
+
+roi_head.bbox_head.0.fc_reg.bias - torch.Size([4]): 
+NormalInit: mean=0, std=0.001, bias=0 
+
+roi_head.bbox_head.0.shared_fcs.0.weight - torch.Size([1024, 12544]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+roi_head.bbox_head.0.shared_fcs.0.bias - torch.Size([1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+roi_head.bbox_head.0.shared_fcs.1.weight - torch.Size([1024, 1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+roi_head.bbox_head.0.shared_fcs.1.bias - torch.Size([1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+roi_head.bbox_head.1.fc_cls.weight - torch.Size([9, 1024]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+roi_head.bbox_head.1.fc_cls.bias - torch.Size([9]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+roi_head.bbox_head.1.fc_reg.weight - torch.Size([4, 1024]): 
+NormalInit: mean=0, std=0.001, bias=0 
+
+roi_head.bbox_head.1.fc_reg.bias - torch.Size([4]): 
+NormalInit: mean=0, std=0.001, bias=0 
+
+roi_head.bbox_head.1.shared_fcs.0.weight - torch.Size([1024, 12544]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+roi_head.bbox_head.1.shared_fcs.0.bias - torch.Size([1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+roi_head.bbox_head.1.shared_fcs.1.weight - torch.Size([1024, 1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+roi_head.bbox_head.1.shared_fcs.1.bias - torch.Size([1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+roi_head.bbox_head.2.fc_cls.weight - torch.Size([9, 1024]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+roi_head.bbox_head.2.fc_cls.bias - torch.Size([9]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+roi_head.bbox_head.2.fc_reg.weight - torch.Size([4, 1024]): 
+NormalInit: mean=0, std=0.001, bias=0 
+
+roi_head.bbox_head.2.fc_reg.bias - torch.Size([4]): 
+NormalInit: mean=0, std=0.001, bias=0 
+
+roi_head.bbox_head.2.shared_fcs.0.weight - torch.Size([1024, 12544]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+roi_head.bbox_head.2.shared_fcs.0.bias - torch.Size([1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+roi_head.bbox_head.2.shared_fcs.1.weight - torch.Size([1024, 1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+roi_head.bbox_head.2.shared_fcs.1.bias - torch.Size([1024]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+rgb_global.enlayer.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+rgb_global.enlayer.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+rgb_global.enlayer.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+rgb_global.enlayer.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+rgb_global.outlayer.0.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+rgb_global.outlayer.0.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp1.0.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp1.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp1.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp1.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp2.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp2.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp2.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp2.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp3.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp3.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp3.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp3.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp4.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp4.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp4.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.ff_conv.aspp4.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp1.0.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp1.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp1.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp1.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp2.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp2.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp2.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp2.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp3.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp3.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp3.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp3.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp4.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp4.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp4.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.bf_conv.aspp4.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.rgbd_pred_layer.enlayer.0.weight - torch.Size([256, 2048, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.rgbd_pred_layer.enlayer.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.rgbd_pred_layer.enlayer.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.rgbd_pred_layer.enlayer.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.rgbd_pred_layer.outlayer.0.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+dsam.rgbd_pred_layer.outlayer.0.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+seghead.conv.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+seghead.conv.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+seghead.conv.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+seghead.conv.3.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+hf_extractor.img_proj.weight - torch.Size([256, 3, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+hf_extractor.img_proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_align.0.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_align.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_align.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_align.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_align.0.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_align.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_align.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_align.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv1.weight - torch.Size([256, 1, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv2.conv.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv2.bn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv2.bn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv3.weight - torch.Size([256, 1, 5, 5]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv4.conv.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv4.bn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv4.bn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv5.weight - torch.Size([256, 1, 7, 7]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.p2_multiscale.conv5.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv1.weight - torch.Size([256, 1, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv2.conv.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv2.bn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv2.bn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv3.weight - torch.Size([256, 1, 5, 5]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv4.conv.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv4.bn.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv4.bn.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv5.weight - torch.Size([256, 1, 7, 7]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.hf_multiscale.conv5.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.attention_gate.0.weight - torch.Size([1, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.attention_gate.0.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.fusion.0.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.fusion.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.fusion.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+mkp_hf.fusion.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+background_extractor.p6_process.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+background_extractor.p6_process.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+background_extractor.p6_process.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+background_extractor.bg_process.0.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+background_extractor.bg_process.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+background_extractor.bg_process.1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+background_extractor.bg_process.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+
+jwpm.level_weights - torch.Size([3]): 
+The value is the same before and after calling `init_weights` of SRTOD_CascadeRCNN_JWPM_BGOnly  
+2025/12/04 15:36:44 - mmengine - WARNING - "FileClient" will be deprecated in future. Please use io functions in https://mmengine.readthedocs.io/en/latest/api/fileio.html#file-io
+2025/12/04 15:36:44 - mmengine - WARNING - "HardDiskBackend" is the alias of "LocalBackend" and the former will be deprecated in future.
+2025/12/04 15:36:44 - mmengine - INFO - Checkpoints will be saved to D:\Win\topic\HD_BSNet\work_dirs\srtod_cascadercnn_jwpm_bgonly.
+2025/12/04 15:37:25 - mmengine - INFO - Epoch(train)  [1][  50/7009]  lr: 5.3961e-05  eta: 2 days, 9:58:22  time: 0.8273  data_time: 0.0869  memory: 14477  loss: 3.1593  loss_rpn_cls: 0.6951  loss_rpn_bbox: 0.0854  s0.loss_cls: 1.2371  s0.acc: 99.7070  s0.loss_bbox: 0.0145  s1.loss_cls: 0.7148  s1.acc: 99.7070  s1.loss_bbox: 0.0044  s2.loss_cls: 0.4074  s2.acc: 99.8047  s2.loss_bbox: 0.0005
