@@ -1,4 +1,4 @@
-[中文版](README_HD_BSNet.md) | English  （The YOLO code is under the branch HD_BSNet_yolo.）
+[中文版](README_HD_BSNet.md) | English  
 
 ## HD-BSNet Training and Data Preparation Guide
 
